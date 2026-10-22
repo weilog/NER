@@ -1,0 +1,46 @@
+{
+  "status": "traditional_dev_selected; awaiting_llm_and_global_test_freeze",
+  "context_sha256": "3c7757191d0bad750b71ce27934e5ae5eda9068d015b709b01e77b66d5f71dea",
+  "run_directory": "runs/traditional_dev",
+  "selection": {
+    "metric": "dev.entity.f1",
+    "tie_break": [
+      "lower_fit_seconds",
+      "configuration_order"
+    ],
+    "test_gate": "freeze configurations and hashes before first formal test scoring"
+  },
+  "best_traditional_by_dev": "crf_c1_0.1_c2_0.1",
+  "selected": {
+    "dictionary": {
+      "name": "dictionary",
+      "parameters": {
+        "tie_break": "frequency_desc_then_type_asc",
+        "decoding": "left_to_right_longest"
+      },
+      "model_path": "artifacts/models/traditional_dev/3c7757191d0b/dictionary.joblib",
+      "model_sha256": "aa1af344b68fc2047411155e8de314b4209582a32f5de9e733d784a3317d4b6f"
+    },
+    "hmm": {
+      "name": "hmm_a0.01_min3_bio",
+      "parameters": {
+        "alpha": 0.01,
+        "min_char_count": 3,
+        "constrained": true
+      },
+      "model_path": "artifacts/models/traditional_dev/3c7757191d0b/hmm_a0.01_min3.joblib",
+      "model_sha256": "1ead6673f8a441d408cceed3fc299d397d8ee8da71eebce149c9b556bd62ce0c"
+    },
+    "crf": {
+      "name": "crf_c1_0.1_c2_0.1",
+      "parameters": {
+        "c1": 0.1,
+        "c2": 0.1,
+        "max_iterations": 100
+      },
+      "model_path": "artifacts/models/traditional_dev/3c7757191d0b/crf_c1_0.1_c2_0.1.joblib",
+      "model_sha256": "c8d75d60e95cc409c9bb1c74ec8e6f951ae2b77282273a46959816989defcd98"
+    }
+  },
+  "test_evaluated": false
+}

@@ -27,3 +27,7 @@ dist/
 !/runs/.gitkeep
 /artifacts/models/*
 !/artifacts/models/.gitkeep
+
+# Local reproducibility bundles may contain full datasets and predictions.
+/artifacts/result-packages/
+/artifacts/split-archives/

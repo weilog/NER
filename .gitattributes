@@ -1,0 +1,2 @@
+# Split manifests are byte-compared during deterministic reconstruction.
+*.json text eol=lf

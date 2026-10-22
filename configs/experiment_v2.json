@@ -1,0 +1,55 @@
+{
+  "protocol": "dual-evaluation-v2",
+  "status": "traditional_dev_complete; llm_not_run; test_not_evaluated",
+  "dataset": {
+    "name": "CLUENER2020",
+    "seed_file": "configs/split_seed.json",
+    "split_manifest": "data/splits/experiment_v2.json",
+    "train_file": "data/processed/experiment_v2/train_valid.jsonl",
+    "train_with_preserved_overlap_file": "data/processed/experiment_v2/train.jsonl",
+    "dev_file": "data/processed/experiment_v2/dev.jsonl",
+    "test_file": "data/processed/experiment_v2/test.jsonl",
+    "official_unlabeled_test_file": "data/processed/experiment_v2/official_test_unlabeled.jsonl",
+    "text_unit": "Python Unicode code point, no text normalization",
+    "excluded_training_ids": ["train:1506"],
+    "license": "unresolved; no dataset license asserted"
+  },
+  "selection": {
+    "metric": "dev.entity.f1",
+    "tie_break": ["lower_fit_seconds", "configuration_order"],
+    "test_gate": "freeze configurations and hashes before first formal test scoring"
+  },
+  "baselines": {
+    "dictionary": {"tie_break": "frequency_desc_then_type_asc", "decoding": "left_to_right_longest"},
+    "hmm": {
+      "alpha": [0.01, 0.1, 1.0], "min_char_count": [1, 2, 3],
+      "main_decoder": "bio_constrained_viterbi",
+      "ablation": "unconstrained_viterbi_same_parameters"
+    },
+    "crf": {"max_iterations": 100, "c1_c2": [[0, 0.1], [0.1, 0.1], [0.1, 1.0]], "device": "cpu"}
+  },
+  "llm": {
+    "provider": "deepseek", "model": "deepseek-flash",
+    "api_key_env": "DEEPSEEK_API_KEY", "base_url_env": "DEEPSEEK_BASE_URL",
+    "temperature": 0, "thinking": {"type": "disabled"},
+    "response_format": {"type": "json_object"},
+    "shots": [0, 2, 4, 8], "nested_example_prefixes": true,
+    "budget_cny": 100, "max_network_retries": 2,
+    "pilot_file": "data/processed/experiment_v2/dev_pilot.jsonl",
+    "tune_file": "data/processed/experiment_v2/dev_tune.jsonl",
+    "examples_file": "data/processed/experiment_v2/examples_8.jsonl",
+    "runtime_parameters_status": "pilot_not_run; output_limit_timeout_concurrency_and_prices_not_frozen",
+    "auto_correct_positions": false
+  },
+  "evaluation": {
+    "primary_prediction_set": "validated-deduplicated-nonoverlapping",
+    "token": "micro over 20 non-O BIO labels, all character positions",
+    "entity": "strict micro over sentence/start/end/type",
+    "overlap_order": ["start_asc", "length_desc", "type_asc"],
+    "invalid_entities": "exclude from both primary metrics; log and raw-span diagnostic",
+    "illegal_bio": "orphan/type-changing I becomes B",
+    "bootstrap_repeats": 2000,
+    "bootstrap_unit": "paired sentences, aggregate TP/FP/FN then recalculate F1",
+    "bootstrap_seed": 141595842
+  }
+}

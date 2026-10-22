@@ -1,0 +1,6 @@
+{
+  "seed": 141595842,
+  "algorithm": "text-group-iterative-first-order-v1",
+  "generated_once": true,
+  "purpose": "split and derived Dev subset/example selection"
+}

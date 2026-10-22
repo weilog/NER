@@ -1,0 +1,4 @@
+﻿family,configuration,missed,spurious,boundary,type,boundary_and_type,strict_fp,strict_fn,token_missed,token_spurious,token_bi_confusion,token_type_confusion
+dictionary,dictionary,676,1041,339,95,168,1643,1278,4855,1712,203,1180
+hmm,hmm_a0.01_min3_bio,515,623,576,247,231,1677,1569,1848,3044,271,2636
+crf,crf_c1_0.1_c2_0.1,523,184,228,194,67,673,1012,2017,880,136,1616
