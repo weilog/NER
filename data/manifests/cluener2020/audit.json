@@ -1,0 +1,71 @@
+{
+  "source": "User-provided Downloads/cluener_public.zip",
+  "license": "Not specified in supplied archive README; not inferred from code license",
+  "archive_sha256": "6dcc30e233034ecd91675182db690be187e61c5a3b5e96bf9f6b971ba8f132fa",
+  "stats": {
+    "train": {
+      "sentences": 10748,
+      "characters": 401764,
+      "labeled_sentences": 10748,
+      "entities": 23971,
+      "entity_counts": {
+        "company": 2980,
+        "name": 3755,
+        "game": 2376,
+        "organization": 3210,
+        "movie": 1123,
+        "position": 3141,
+        "address": 2891,
+        "government": 1835,
+        "scene": 1521,
+        "book": 1139
+      },
+      "overlapping_sentences": 1
+    },
+    "dev": {
+      "sentences": 1343,
+      "characters": 50260,
+      "labeled_sentences": 1343,
+      "entities": 3072,
+      "entity_counts": {
+        "name": 465,
+        "address": 373,
+        "organization": 367,
+        "game": 295,
+        "scene": 209,
+        "book": 154,
+        "company": 378,
+        "position": 433,
+        "government": 247,
+        "movie": 151
+      },
+      "overlapping_sentences": 0
+    },
+    "test": {
+      "sentences": 1345,
+      "characters": 50972,
+      "labeled_sentences": 0,
+      "entities": null,
+      "entity_counts": {},
+      "overlapping_sentences": 0
+    }
+  },
+  "hashes": {
+    "train": {
+      "raw_sha256": "60299d202779dc84f3c3bd81f4dc08f5323d0dbf762cb50cd62dd51aa9a871f8",
+      "processed_sha256": "b961b8a8803824c26b213b2c98951974960763c09ae20aa4ef1e7973a0b01187"
+    },
+    "dev": {
+      "raw_sha256": "90036b59832e007c45d11eafe5ed80549f58a18a29aaa7fe8b1229622c69ec38",
+      "processed_sha256": "f84809749ab6bf0facbd6b42a2b2ef0c3e75130ce60542d0412f870ad106c86e"
+    },
+    "test": {
+      "raw_sha256": "5ca36f6fbe29230a6e3244110fcd9487fc2f5a672f5bfeba82a30f0ece72aa69",
+      "processed_sha256": "88f72792b3a153f439bb014508c1d7ab0ff686dbb6ea5bf2552d4f8c721ca9db"
+    }
+  },
+  "policy": "No deduplication, sampling, relabeling or resplitting. Original inclusive end converted to exclusive end.",
+  "duplicate_groups": 0,
+  "cross_split_duplicate_groups": 0,
+  "annotation_conflict_groups": 0
+}

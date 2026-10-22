@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fewnerd-ner-experiment"
+version = "0.1.0"
+description = "Course experiment scaffold for traditional and LLM named entity recognition"
+requires-python = ">=3.10"
+dependencies = [
+  "pyarrow==26.0.0",
+  "numpy==2.5.4",
+  "pandas==3.0.6",
+  "scikit-learn==1.9.1",
+  "sklearn-crfsuite==0.5.0",
+  "openai==3.35.1",
+  "python-dotenv==1.2.4",
+  "matplotlib==3.11.2",
+  "seaborn==0.13.2",
+  "pytest==9.1.1",
+  "tqdm==4.70.1",
+  "requests==2.34.2",
+  "pyyaml==6.0.3"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

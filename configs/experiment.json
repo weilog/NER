@@ -1,0 +1,40 @@
+{
+  "status": "draft",
+  "dataset": {
+    "name": "CLUENER2020",
+    "source": "user-provided cluener_public.zip",
+    "label_level": "10 entity types",
+    "tokenization": "Unicode characters",
+    "raw_dir": "data/raw/cluener2020",
+    "processed_dir": "data/processed/cluener2020",
+    "train_file": "data/processed/cluener2020/train.jsonl",
+    "dev_file": "data/processed/cluener2020/dev.jsonl",
+    "unlabeled_test_file": "data/processed/cluener2020/test.jsonl",
+    "seed": 42,
+    "deduplication": false,
+    "sampling": false,
+    "evaluation_split_policy": "pending; official test is unlabeled",
+    "overlap_policy": "preserve spans; bio_tags null; training policy pending"
+  },
+  "baseline_methods": [],
+  "llm": {
+    "provider": "deepseek",
+    "model": null,
+    "api_key_env": "DEEPSEEK_API_KEY",
+    "base_url_env": "DEEPSEEK_BASE_URL",
+    "shots": [
+      0,
+      2,
+      4,
+      8
+    ],
+    "budget_cny": 100,
+    "pilot_samples": 20
+  },
+  "evaluation": {
+    "primary": "strict_entity_micro_f1",
+    "span_end": "exclusive",
+    "bootstrap_repeats": 2000,
+    "seed": 42
+  }
+}
