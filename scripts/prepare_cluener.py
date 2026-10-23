@@ -89,9 +89,9 @@ def main(root):
     for split,s in stats.items():report.append(f"| {split} | {s['sentences']} | {s['labeled_sentences']} | {s['entities']} | {s['overlapping_sentences']} |")
     report += ['',f"精确重复文本组：{len(duplicates)}；跨划分重复组：{audit['cross_split_duplicate_groups']}；带标签记录间冲突组：{audit['annotation_conflict_groups']}。仅记录，未删除。",
                '', '原实体位置是字符级闭区间 [start,end]；标准格式改为 [start,end)，并逐实体校验实体文字与原文切片一致。',
-               '重叠实体完整保留，bio_tags=null、bio_compatible=false，单层 BIO 模型的处理策略需在训练前明确，不静默覆盖。',
+               '重叠实体完整保留，bio_tags=null、bio_compatible=false；项目划分将其固定在Train，训练及提示统一跳过，不静默覆盖。',
                'test 没有真实标签，entities/bio_tags=null，不能当成没有实体的负样本或直接用于有监督评分。cluener_predict.json 是随包预测示例，不能当测试真值。',
-               '当前未指定独立的项目最终评估集；在划分协议确定前不进行正式选参或测试。',
+               '独立项目Train/Dev/Test由refresh_split.py生成，详见project_split.md；本脚本仅转换官方原始数据，不改变项目协议。',
                '许可：随包 README 未明确说明数据许可；保留来源记录，不自行标成开放许可证。',
                '', '运行：`.venv\\Scripts\\python.exe scripts\\prepare_cluener.py`。详细审计、重复和重叠样本位于 data/manifests/cluener2020。']
     (root/'docs/data_preparation.md').write_text('\n'.join(report)+'\n',encoding='utf-8')

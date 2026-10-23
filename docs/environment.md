@@ -27,4 +27,4 @@ requirements-lock.txt 记录本机实际安装的精确版本；它不是跨操�
 
 全部基础包和项目包可导入；逻辑回归最小训练预测、CRF 最小训练预测、Matplotlib 无窗口绘图通过。此为环境检查，不是正式实验结果。
 
-尚未安装 PyTorch、CUDA 训练栈或下载模型；神经网络基线确认后再配置。尚未调用 DeepSeek API，不产生调用费用。
+未安装PyTorch或CUDA，当前传统方法均在CPU运行。2026-10-23已进行DeepSeek真实调用，usage与预算账本位于runs/llm，费用报告由实际用量生成。

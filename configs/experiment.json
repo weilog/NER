@@ -6,20 +6,31 @@
     "label_level": "10 entity types",
     "tokenization": "Unicode characters",
     "raw_dir": "data/raw/cluener2020",
-    "processed_dir": "data/processed/cluener2020",
-    "train_file": "data/processed/cluener2020/train.jsonl",
-    "dev_file": "data/processed/cluener2020/dev.jsonl",
+    "processed_dir": "data/processed/cluener2020_project",
+    "train_file": "data/processed/cluener2020_project/train.jsonl",
+    "dev_file": "data/processed/cluener2020_project/dev.jsonl",
     "unlabeled_test_file": "data/processed/cluener2020/test.jsonl",
-    "seed": 42,
+    "seed": 718853259,
     "deduplication": false,
     "sampling": false,
-    "evaluation_split_policy": "pending; official test is unlabeled",
-    "overlap_policy": "preserve spans; bio_tags null; training policy pending"
+    "evaluation_split_policy": "Official dev unchanged; project test held out from official train via iterative multilabel stratification",
+    "overlap_policy": "preserve raw; fixed in train and excluded from all training and prompt examples",
+    "official_processed_dir": "data/processed/cluener2020",
+    "test_file": "data/processed/cluener2020_project/test.jsonl",
+    "train_size": 9539,
+    "dev_size": 1343,
+    "test_size": 1209,
+    "split_manifest": "data/splits/cluener2020/manifest.json",
+    "effective_train_size": 9538
   },
-  "baseline_methods": [],
+  "baseline_methods": [
+    "dictionary",
+    "hmm",
+    "crf"
+  ],
   "llm": {
     "provider": "deepseek",
-    "model": null,
+    "model": "deepseek-flash",
     "api_key_env": "DEEPSEEK_API_KEY",
     "base_url_env": "DEEPSEEK_BASE_URL",
     "shots": [
@@ -35,6 +46,6 @@
     "primary": "strict_entity_micro_f1",
     "span_end": "exclusive",
     "bootstrap_repeats": 2000,
-    "seed": 42
+    "seed": 718853259
   }
 }

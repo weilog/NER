@@ -1,0 +1,11 @@
+﻿category,train_entities,dev_entities,test_entities,train_sentence_coverage,dev_sentence_coverage,test_sentence_coverage
+address,2572,373,319,1855,273,235
+book,1016,154,123,806,121,102
+company,2636,378,344,1966,279,249
+game,2139,295,237,1706,226,191
+government,1634,247,201,1297,190,164
+movie,997,151,126,691,101,88
+name,3329,465,426,2527,352,320
+organization,2863,367,347,1681,206,213
+position,2799,433,342,2187,347,277
+scene,1338,209,183,840,124,106

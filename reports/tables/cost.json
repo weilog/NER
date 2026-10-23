@@ -1,0 +1,9 @@
+{
+  "attempts": 5704,
+  "prompt_tokens": 7451146,
+  "completion_tokens": 219538,
+  "peak_price_upper_cny": 6.4241972800000005,
+  "off_peak_lower_cny": 3.2120986400000002,
+  "uncertain_reserved_cny": 0,
+  "note": "Price-range estimate, not invoice. All billed usage includes pilot and Dev tuning. Pending unknown requests retain worst-case reservations."
+}

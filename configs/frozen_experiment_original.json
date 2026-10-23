@@ -1,0 +1,30 @@
+{
+  "frozen_at": "2026-10-23T04:38:36.113525+00:00",
+  "snapshot": {
+    "files": {
+      "data/splits/cluener2020/manifest.json": "abd6bc61f6972f9a1bbc8c35792e9493cec03bf35dfb86a40d550370bad60fc9",
+      "configs/experiment.json": "1a74c0d2b4539423096c5ae6e3edc304cc119bc5a164e9603ce437acb7489188",
+      "configs/pricing.json": "31ec0fc71499ed4160be0d65e2576cc4c0fce92f39eb56c968a05ae49e471966",
+      "runs/baselines/selection.json": "0f972e1715c7acebebbb1e5c1f3bae754b58fdf230d215221e9c5167d8f0c350",
+      "runs/llm/selection.json": "9f1dc010f01f551d7d1a6d204ed49b522df4b33f3472e908ab42451a31aad880",
+      "runs/llm/interface_frozen.json": "76b72ef5e3b95f350b22425997a349796d3b692986d8dd44ee20d80b1ff6610c",
+      "src/ner_experiment/common.py": "decea0427b8d64a1a1fdd2312eb6b5ac4bbf9d570a94fbc6b0084bacb822aba0",
+      "src/ner_experiment/__init__.py": "726e16514a0cce8fc2258a4d3b862009699903a7780d85a8723267a1d93556f5",
+      "src/ner_experiment/data/__init__.py": "726e16514a0cce8fc2258a4d3b862009699903a7780d85a8723267a1d93556f5",
+      "src/ner_experiment/evaluation/metrics.py": "5109e0acf6f648ab6427a920e2412a3b69e6b9b9786561c2a15408d4981e2a4f",
+      "src/ner_experiment/evaluation/__init__.py": "726e16514a0cce8fc2258a4d3b862009699903a7780d85a8723267a1d93556f5",
+      "src/ner_experiment/llm/__init__.py": "726e16514a0cce8fc2258a4d3b862009699903a7780d85a8723267a1d93556f5",
+      "src/ner_experiment/models/baselines.py": "86a57e686cfe3544f082666506bdb4c736f68d291f9da5fbe3b8b65189f04bf7",
+      "src/ner_experiment/models/llm.py": "3e9efedb095b583f623f801d213e194815ed6a41a1c4f5ea34bc4d3201139f48",
+      "src/ner_experiment/models/__init__.py": "726e16514a0cce8fc2258a4d3b862009699903a7780d85a8723267a1d93556f5"
+    },
+    "selected": {
+      "dictionary": "00_dictionary",
+      "hmm": "02_hmm",
+      "crf": "11_crf"
+    },
+    "best_traditional": "11_crf",
+    "best_shots": 4,
+    "test_size": 1209
+  }
+}

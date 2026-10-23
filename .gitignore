@@ -27,3 +27,6 @@ dist/
 !/runs/.gitkeep
 /artifacts/models/*
 !/artifacts/models/.gitkeep
+
+# Local human-review sheets contain corpus text and personal review notes
+/reports/review/

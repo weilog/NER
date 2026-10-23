@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-23T04:45:52.446636+00:00",
+  "reason": "JSON object key insertion order only; semantic fingerprint unchanged from pre-Test baseline record",
+  "original_manifest_sha256": "abd6bc61f6972f9a1bbc8c35792e9493cec03bf35dfb86a40d550370bad60fc9",
+  "current_manifest_sha256": "5784f15d102c3350dec273b56a0795f33315f995d03abf14487dc9bd15850587",
+  "pre_test_semantic_fingerprint_verified": "c885ffd785dab9af3c89cc1a03f5284884344e07534355666d2eccbc4ede904e",
+  "data_model_predictions_and_selections_changed": false,
+  "original_freeze_sha256": "12f4d7f24101aa825efd18a6bac5aa3cb9a42bacf2f2586c74b98cf217b50b14"
+}

@@ -1,0 +1,5 @@
+# Preserve exact bytes used by frozen SHA256 manifests across OS checkouts.
+src/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+scripts/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+configs/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+data/splits/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

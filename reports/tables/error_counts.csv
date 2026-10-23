@@ -1,0 +1,6 @@
+﻿method,missed,spurious,boundary,type,boundary_and_type,invalid
+dictionary,603,858,315,95,142,0
+hmm,442,516,493,217,204,0
+crf,473,167,210,185,67,0
+llm_zero,392,355,624,163,101,0
+llm_few,469,238,332,187,41,0

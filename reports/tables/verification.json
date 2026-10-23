@@ -1,0 +1,19 @@
+{
+  "checked_at": "2026-10-23T04:46:28.026787+00:00",
+  "full_pipeline_resume": true,
+  "no_new_api_requests": true,
+  "data_and_predictions_hashes_unchanged": true,
+  "files": {
+    "configs/frozen_experiment.json": "19561984ee60720c2a7495a6a92ab8edae59c23936d90e4f31bf52dfc7d621df",
+    "runs/llm/ledger.json": "316b0b6ac5627d5991b9019e28db39f5042adf6a7db6cd2069eafa4b82f45c03",
+    "data/processed/cluener2020_project/dev.jsonl": "2cabcd9363ceeb86c92d412a3cf780f7b25189b135fcea442001c3781defed1f",
+    "data/processed/cluener2020_project/test.jsonl": "cda8f3f19c448e3d771d75a110d50800c792641419c3f9c7862a41e27b542c7c",
+    "data/processed/cluener2020_project/train.jsonl": "a375e5775c69441d470ec8af084df4f2bc106779c6bc679f7f745cf07d5cca8b",
+    "runs/final/crf/predictions.jsonl": "cdde340e9212e679fd3fc7935c401d50e638efbecc91ed628ee625724f4dac36",
+    "runs/final/dictionary/predictions.jsonl": "c97f7ddd4090acf44589f77c33e5927c2d867bd0d0063ed6cff705e0f8a832c4",
+    "runs/final/hmm/predictions.jsonl": "b79a416120d91266903f3152cd010c8f0fd6862e8008aacd6c59a92ec7b698b1",
+    "runs/final/llm_few/predictions.jsonl": "17fe5114f97aae1c51abc117461dd15dc4fffd8e84b9f3d55737f1418bf8813e",
+    "runs/final/llm_zero/predictions.jsonl": "92792c499f8a35adf8bd540754eb1a1a35a0259bcbf8e5e818b48d6faf69fa22"
+  },
+  "note": "Same-machine cache-resume verification; independent-machine reproduction and human review remain pending."
+}
