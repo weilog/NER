@@ -1,0 +1,22 @@
+{
+  "stage": "pilot_20_zero_shot",
+  "prompt_variant": "boundary_columns_v2",
+  "runtime_status": "candidate_parameters_not_yet_frozen",
+  "model": "deepseek-flash",
+  "temperature": 0,
+  "thinking": {"type": "disabled"},
+  "response_format": {"type": "json_object"},
+  "max_tokens": 2048,
+  "timeout_seconds": 45,
+  "concurrency": 1,
+  "max_retries": 2,
+  "retry_backoff_seconds": [1, 2],
+  "budget_cny": 100,
+  "pilot_budget_cny": 5,
+  "ledger_path": "runs/llm/budget.sqlite3",
+  "run_directory": "runs/llm/pilot_20_zero_shot_v2",
+  "pricing_file": "configs/deepseek_pricing_2026-10-24.json",
+  "shot_count": 0,
+  "automatic_position_correction": false,
+  "automatic_format_repair_calls": false
+}

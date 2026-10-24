@@ -18,10 +18,10 @@ from ner_experiment.llm.client import DeepSeekTransport, execute_request
 from ner_experiment.llm.prompts import PROMPT_VERSION, PARSER_VERSION, request_for, request_key
 
 
-def prepare(root):
+def prepare(root, config_path='configs/llm_pilot_v2.json'):
     root = Path(root)
     experiment = json.loads((root / 'configs/experiment_v2.json').read_text(encoding='utf-8'))
-    config = json.loads((root / 'configs/llm_pilot.json').read_text(encoding='utf-8'))
+    config = json.loads((root / config_path).read_text(encoding='utf-8'))
     if config['shot_count'] != 0 or config['concurrency'] != 1 or config['max_retries'] > 2:
         raise ValueError('The fixed pilot is zero-shot, serial, at most two retries')
     if config['thinking'] != {'type': 'disabled'} or config['model'] != 'deepseek-flash':
@@ -51,9 +51,9 @@ def prepare(root):
     return config, pricing, rows, requests, context, credential
 
 
-def run_pilot(root, dry_run=False):
+def run_pilot(root, dry_run=False, config_path='configs/llm_pilot_v2.json'):
     root = Path(root)
-    config, pricing, rows, requests, context, credential = prepare(root)
+    config, pricing, rows, requests, context, credential = prepare(root, config_path)
     directory = root / config['run_directory']
     directory.mkdir(parents=True, exist_ok=True)
     context_path = directory / 'context.json'

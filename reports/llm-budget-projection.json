@@ -1,0 +1,41 @@
+{
+  "basis": "20-row v2 actual usage; input max token/byte ratio and output P95, both 1.5x; peak prices; no server cache benefit",
+  "estimates_are_not_guarantees": true,
+  "pilot_total_accounted_cny": 0.02982192,
+  "tuning_plans": [
+    {
+      "shots": 0,
+      "samples": 300,
+      "input_token_projection_mean": 1356.3366666666666,
+      "output_token_projection_per_sample": 122,
+      "peak_uncached_projected_cny": 1.106602
+    },
+    {
+      "shots": 2,
+      "samples": 300,
+      "input_token_projection_mean": 2561.4766666666665,
+      "output_token_projection_per_sample": 122,
+      "peak_uncached_projected_cny": 1.829686
+    },
+    {
+      "shots": 4,
+      "samples": 300,
+      "input_token_projection_mean": 3746.6466666666665,
+      "output_token_projection_per_sample": 122,
+      "peak_uncached_projected_cny": 2.540788
+    },
+    {
+      "shots": 8,
+      "samples": 300,
+      "input_token_projection_mean": 6065.52,
+      "output_token_projection_per_sample": 122,
+      "peak_uncached_projected_cny": 3.932112
+    }
+  ],
+  "future_calls_without_retries_with_cache_reuse": 5684,
+  "projected_remaining_cny_with_cache_reuse": 47.15936096,
+  "projected_total_cny": 47.189182880000004,
+  "budget_cny": 100,
+  "test_text_accessed": false,
+  "test_count_from_manifest": 1209
+}

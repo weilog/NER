@@ -58,7 +58,9 @@ def test_prompt_is_character_indexed_zero_shot_and_hides_gold():
     messages = messages_for('𠮷😀北')
     assert len(messages) == 2
     input_data = json.loads(messages[-1]['content'])
-    assert input_data == {'text': '𠮷😀北', 'character_count': 3, 'characters': [[0, '𠮷'], [1, '😀'], [2, '北']]}
+    assert input_data == {'text': '𠮷😀北', 'character_count': 3,
+                          'character_columns': ['start', 'character', 'end'],
+                          'characters': [[0, '𠮷', 1], [1, '😀', 2], [2, '北', 3]]}
     assert 'entities' not in input_data
     examples = [{'id': 'train:0', 'text': '张三', 'entities': [{'start': 0, 'end': 2, 'type': 'name', 'text': '张三'}], 'bio_compatible': True}]
     assert len(messages_for('北京', examples)) == 4
@@ -230,7 +232,7 @@ def test_full_mock_pilot_offline_recompute_freeze_and_cached_resume(tmp_path, mo
              'bio_tags': ['B-organization'] + ['I-organization'] * 3} for i in range(20)]
     requests = [{'id': row['id'], 'request': request_for(row['text'], config)} for row in rows]
     context = {'config': config, 'endpoint': ENDPOINT, 'no_credential_here': True}
-    monkeypatch.setattr(pilot, 'prepare', lambda root: (config, pricing, rows, requests, context, 'synthetic-test-placeholder'))
+    monkeypatch.setattr(pilot, 'prepare', lambda root, config_path: (config, pricing, rows, requests, context, 'synthetic-test-placeholder'))
     fake = Transport(*[response(json.dumps({'entities': [entity]})) for _ in rows])
     fake.close = lambda: None
     monkeypatch.setattr(pilot, 'DeepSeekTransport', lambda *args: fake)

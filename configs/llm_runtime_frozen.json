@@ -1,0 +1,57 @@
+{
+  "status": "pilot_format_and_position_checks_passed; not_a_test_authorization",
+  "pilot_context_sha256": "ace9f0fdafb623e34e59341b33ff4dc9f70375dbd26ed9753a302d9d2ba369ed",
+  "requested_model": "deepseek-flash",
+  "reported_response_models": [
+    "deepseek-flash"
+  ],
+  "documented_model_version": "DeepSeek-V4.1-Flash-1017",
+  "prompt_version": "cluener-boundary-columns-json-v2",
+  "parser_version": "strict-envelope-preserve-invalid-entities-v1",
+  "parameters": {
+    "temperature": 0,
+    "thinking": {
+      "type": "disabled"
+    },
+    "response_format": {
+      "type": "json_object"
+    },
+    "max_tokens": 2048,
+    "timeout_seconds": 45,
+    "concurrency": 1,
+    "max_retries": 2
+  },
+  "pricing_snapshot": {
+    "verified_date_shanghai": "2026-10-24",
+    "currency": "CNY",
+    "source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+    "model": "deepseek-flash",
+    "documented_model_version": "DeepSeek-V4.1-Flash-1017",
+    "per_million_tokens": {
+      "off_peak": {
+        "input_cache_hit": 0.02,
+        "input_cache_miss": 1,
+        "output": 4
+      },
+      "peak": {
+        "input_cache_hit": 0.04,
+        "input_cache_miss": 2,
+        "output": 8
+      }
+    },
+    "peak_hours_shanghai": [
+      [
+        9,
+        12
+      ],
+      [
+        14,
+        18
+      ]
+    ],
+    "weekend_is_off_peak": true,
+    "holiday_policy": "weekday holidays conservatively counted as peak; provider bill may be lower",
+    "reservation_policy": "peak uncached price; serialized request UTF-8 bytes plus 512 input-token allowance, plus max output; unknown failures retain full reservation"
+  },
+  "pilot_summary_sha256": "7145086effd411809ac81dad155eff2ca0ebf33128acbc926fe8bee9f10f05ca"
+}
