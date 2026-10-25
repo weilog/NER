@@ -9,6 +9,10 @@
 DeepSeek 已完成两版固定 20 条 Dev 试跑；第二版通过格式和位置检查，接口参数已冻结，累计保守记账约 0.0298 元。
 正式 Test 和 300 条 LLM 调参尚未运行，不能将 Dev 或试跑分数当成最终结果。
 
+2026-10-25：新增本分支独立的字符定位 2×2 对照。固定四条训练示例，在排除旧试跑与调参子集后的 200 条 Dev 上完成四组共 800 次真实请求；考察索引展示和终点解释，而非重复 main 的示例数量实验。
+三列索引的坐标错误句子从 6/200 降到 1/200，但实体 F1 差值区间仍包含零，不宣称普遍提升。正式 Test 未运行。
+见 [实测表与配对区间](reports/index-factorial-results.md)、[结果解读](reports/index-factorial-findings.md)、[完整学习与代码讲解](docs/learning-index-experiment.md)。
+
 当前配置为 `configs/experiment_v2.json`；`configs/experiment.json` 为保留的历史草稿。
 详细规则和复现方式见 [双层评估协议](docs/experiment-protocol-v2.md)。
 传统实验见 [Dev 主结果](reports/traditional-dev.md)、[原理与错误分析](reports/traditional-dev-analysis.md) 和 [复现说明](docs/traditional-experiments.md)。
