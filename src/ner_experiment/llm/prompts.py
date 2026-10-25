@@ -62,9 +62,10 @@ def canonical(value):
     return json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(',', ':'))
 
 
-def request_key(sample_id, request, endpoint):
+def request_key(sample_id, request, endpoint, *, prompt_version=PROMPT_VERSION,
+                parser_version=PARSER_VERSION):
     material = {'id': sample_id, 'endpoint': endpoint, 'request': request,
-                'prompt_version': PROMPT_VERSION, 'parser_version': PARSER_VERSION}
+                'prompt_version': prompt_version, 'parser_version': parser_version}
     return hashlib.sha256(canonical(material).encode('utf-8')).hexdigest()
 
 

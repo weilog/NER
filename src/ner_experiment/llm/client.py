@@ -46,16 +46,18 @@ class DeepSeekTransport:
 
 
 def execute_request(sample_id, request, endpoint, ledger, transport, pricing,
-                    stage, stage_limit, max_retries=2, backoff=(1, 2), sleep=time.sleep):
+                    stage, stage_limit, max_retries=2, backoff=(1, 2), sleep=time.sleep,
+                    prompt_version=PROMPT_VERSION, parser_version=PARSER_VERSION):
     if max_retries not in (0, 1, 2):
         raise ValueError('At most two explicit retries allowed')
-    key = request_key(sample_id, request, endpoint)
+    key = request_key(sample_id, request, endpoint, prompt_version=prompt_version,
+                      parser_version=parser_version)
     cached = ledger.cached(key)
     if cached is not None:
         return cached, True
     record = {'id': sample_id, 'request_key': key, 'request': request,
-              'endpoint': endpoint, 'prompt_version': PROMPT_VERSION,
-              'parser_version': PARSER_VERSION, 'pricing_snapshot': pricing,
+              'endpoint': endpoint, 'prompt_version': prompt_version,
+              'parser_version': parser_version, 'pricing_snapshot': pricing,
               'fatal': False, 'operational_issues': []}
     amount = reserve_cost(request, pricing)
     attempts = ledger.attempts(key)
