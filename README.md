@@ -6,8 +6,10 @@
 新版 Train/Dev/Test 已固定为 9,539 / 1,343 / 1,209；有效 Train 为 9,538。
 双层评估器已实现，Token 与实体主指标采用同一规范化预测集合。
 词典、HMM、CRF 已完成 22 组 Dev 配置评估；按实体 F1 选出的传统方案为 CRF（c1=0.1、c2=0.1），Dev 实体 F1 为 70.97%。
-DeepSeek 已完成两版固定 20 条 Dev 试跑；第二版通过格式和位置检查，接口参数已冻结，累计保守记账约 0.0298 元。
-正式 Test 和 300 条 LLM 调参尚未运行，不能将 Dev 或试跑分数当成最终结果。
+DeepSeek 已完成两版固定 20 条 Dev 试跑；第二版通过格式和位置检查，接口参数已冻结。
+2026-10-26：完成固定 300 条 Dev 的 0/2/4/8-shot 比较，按实体 F1 选定 4-shot，并完成零样本和 4-shot 的完整 Dev 检查。
+完整 Dev 实体 F1：零样本 58.23%、4-shot 71.18%、CRF 70.97%。这些是开发集结果，正式 Test 尚未预测或评分。
+本轮新增记账约 3.0227 元，全项目累计约 3.6603 元；没有未决记账。完整双层指标、各类指标及自动错误归因见 [五方法 Dev 结果](reports/five-method-dev.md)。
 
 2026-10-25：新增本分支独立的字符定位 2×2 对照。固定四条训练示例，在排除旧试跑与调参子集后的 200 条 Dev 上完成四组共 800 次真实请求；考察索引展示和终点解释，而非重复 main 的示例数量实验。
 三列索引的坐标错误句子从 6/200 降到 1/200，但实体 F1 差值区间仍包含零，不宣称普遍提升。正式 Test 未运行。
@@ -42,7 +44,16 @@ Git 仓库不包含原始语料、处理后数据或虚拟环境。克隆后，�
 环境说明见 docs/environment.md；精确依赖见 requirements-lock.txt。密钥只放环境变量或本机 .env；LLM 运行器显式读取 .env，其他模块不会自动加载。
 
 划分 ID 和哈希见 `data/splits/experiment_v2.json`；唯一重叠样本 `train:1506` 固定在 Train，但训练与提示示例统一跳过。
-官方无标签 Test 单独保留。传统模型选择见 `configs/traditional_selected.json`；仍需完成 LLM Dev 实验并冻结全局配置，正式 Test 尚未运行。
+官方无标签 Test 单独保留。传统模型选择见 `configs/traditional_selected.json`，LLM 选择见 `configs/llm_selected.json`；下一阶段冻结全局 Test 运行配置后再评分。
+
+LLM Dev 的固定设计见 `configs/llm_dev_v1.json`。下面的回放只使用本地缓存；缓存不完整会停止，不会补发网络请求：
+
+```powershell
+.\.venv\Scripts\python.exe scripts\verify_llm_dev.py
+.\.venv\Scripts\python.exe scripts\analyze_llm_dev.py
+```
+
+真实调用入口为 `scripts/run_llm_dev.py --phase tune`，完成后才能运行 `--phase full`；`--dry-run` 只准备计划。原始回答、usage、共享预算账本及模型保存在本地，不进入 Git。
 
 ## 旧项目归档
 

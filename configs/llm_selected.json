@@ -1,0 +1,58 @@
+{
+  "status": "dev_selection_complete; test_not_evaluated",
+  "prompt_version": "cluener-boundary-columns-json-v2",
+  "parser_version": "strict-envelope-preserve-invalid-entities-v1",
+  "selected_few_shot_count": 4,
+  "selection_rule": [
+    "highest tune entity micro F1 among shots 2/4/8",
+    "lower mean recorded network seconds",
+    "configuration order 2/4/8"
+  ],
+  "example_ids": [
+    "train:3487",
+    "train:6404",
+    "train:3422",
+    "train:3874"
+  ],
+  "parameters": {
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "thinking": {
+      "type": "disabled"
+    },
+    "response_format": {
+      "type": "json_object"
+    },
+    "max_tokens": 2048,
+    "timeout_seconds": 45,
+    "max_retries": 2,
+    "concurrency": 4
+  },
+  "full_dev_context_sha256": "7b4f7ec018946e51f7234330c5d489a5e2e9102eb7cc678347f9c52da7807979",
+  "full_dev_summary_sha256": "de6bba59951ae40208ead5de250925725e210c69cc732cc37dab0ed1c14515ce",
+  "tune_context_sha256": "cb8f7b69ffa961ba4f601e512f0d2167fce95099c78da32084feae1add81edb5",
+  "tune_summary_sha256": "a4fdcd0f21839a3c72be7009b37cdaf5acd360b205b83239cf6647b70d5b6aad",
+  "source_sha256": {
+    "src/ner_experiment/experiments/llm_dev.py": "16fc8f1fea724dd03d5eb96be4a47605887509f4ec3b977f67510a6a1935d546",
+    "src/ner_experiment/experiments/index_factorial.py": "42fba18c34ca19d06eb9ce19f0f3c754064d5462a32c448db1fa89eff20ec791",
+    "src/ner_experiment/experiments/traditional.py": "262b2a5f11650d62daf8e6ad6e20e4a2d3a7b191f97c2cf721238c43f7f85720",
+    "src/ner_experiment/data/splitting.py": "be70d0f7c4151e06a18472b6bc0480c8ae8552d8fb3e172341c0eefc1c504ce8",
+    "src/ner_experiment/evaluation/metrics.py": "dd03f3ed84764d2dc1440103a43cc988e7998f8f04668baa053f1ff4581c1272",
+    "src/ner_experiment/evaluation/index_diagnostics.py": "b08f02fa9521a44b7714578e2b92ef835589aa0eb4d7ee5649a3cfb5ecdb0882",
+    "src/ner_experiment/llm/prompts.py": "17a6d856d5891076334a11f2255c17d2ee3fd11f207f49e454116f13cefcbbbc",
+    "src/ner_experiment/llm/client.py": "3d3a69630f379cfbd33193a7eed0df0b0ba8147dba588fca4ed260f1c5edcad7",
+    "src/ner_experiment/llm/budget.py": "f1eef79ff412603580474dc4a6355465299e10c0f35905cb00afe3a4525cef85"
+  },
+  "input_sha256": {
+    "dev.jsonl": "2cabcd9363ceeb86c92d412a3cf780f7b25189b135fcea442001c3781defed1f",
+    "dev_tune.jsonl": "8c0e3af0502e3fa9050823e868072c9054b4f299f5ef4977ec3f211145c9fad8",
+    "examples_8.jsonl": "0a28bd79e14833b38b913d3c929aa98c06a2b4c675140c0fc1be9043b4df7bc4"
+  },
+  "response_models": [
+    "deepseek-flash"
+  ],
+  "system_fingerprints": [
+    "e72d3c7f663d3e1383b00b3884cb4501"
+  ],
+  "test_accessed": false
+}

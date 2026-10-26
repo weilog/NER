@@ -1,0 +1,30 @@
+{
+  "all_saved_predictions_rescored_identically": true,
+  "methods": 5,
+  "tune_arms": 4,
+  "error_count_conservation": true,
+  "illustrative_cases": 6,
+  "stage_accounted_cny": 3.02273404,
+  "accounting": {
+    "accounted_cny": 3.660255,
+    "budget_cny": 100,
+    "attempt_count": 4106,
+    "unknown_or_pending_attempts": 0,
+    "unknown_or_pending_reserved_cny": 0,
+    "successful_response_attempts": 4106
+  },
+  "test_accessed": false,
+  "preregistration_commit": "1cbfebf2267b577b1f232ba23d441256e634bae8",
+  "commit_date_shanghai": "2026-10-26T11:58:51+08:00",
+  "first_new_paid_attempt": "2026-10-26T11:58:54.072709+08:00",
+  "commit_precedes_first_new_paid_attempt": true,
+  "offline_replay": {
+    "cached_request_positions_replayed": 3886,
+    "additional_api_attempts": 0,
+    "protected_files_byte_identical": 33,
+    "accounting_unchanged": true,
+    "test_accessed": false
+  },
+  "automated_tests_passed": 93,
+  "human_error_review_completed": false
+}

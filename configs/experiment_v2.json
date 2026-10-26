@@ -1,6 +1,6 @@
 {
   "protocol": "dual-evaluation-v2",
-  "status": "traditional_dev_complete; llm_pilot_v2_passed; index_factorial_dev_complete; llm_shot_tuning_pending; test_not_evaluated",
+  "status": "traditional_dev_complete; llm_pilot_v2_passed; index_factorial_dev_complete; llm_shot_tuning_and_full_dev_complete; test_not_evaluated",
   "dataset": {
     "name": "CLUENER2020",
     "seed_file": "configs/split_seed.json",
@@ -38,7 +38,7 @@
     "pilot_file": "data/processed/experiment_v2/dev_pilot.jsonl",
     "tune_file": "data/processed/experiment_v2/dev_tune.jsonl",
     "examples_file": "data/processed/experiment_v2/examples_8.jsonl",
-    "runtime_parameters_status": "pilot_v2_passed; see configs/llm_runtime_frozen.json; prompt_shot_tuning_pending",
+    "runtime_parameters_status": "pilot_v2_passed; fixed-prefix shot tuning complete; selected 4-shot; see configs/llm_selected.json",
     "auto_correct_positions": false
   },
   "evaluation": {
