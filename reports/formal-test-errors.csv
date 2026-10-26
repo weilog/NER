@@ -1,0 +1,6 @@
+﻿method,missed,spurious,boundary,type,boundary_and_type,token_missed,token_spurious,token_bi_confusion,token_type_confusion
+dictionary,551,866,280,126,131,4202,1527,180,1106
+hmm,410,540,520,233,183,1436,2724,237,2345
+crf,411,162,210,187,66,1595,924,111,1609
+llm_zero,474,327,431,215,82,2474,1033,326,1629
+llm_4_shot,350,328,196,231,54,1378,1048,110,1666

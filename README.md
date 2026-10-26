@@ -8,11 +8,14 @@
 词典、HMM、CRF 已完成 22 组 Dev 配置评估；按实体 F1 选出的传统方案为 CRF（c1=0.1、c2=0.1），Dev 实体 F1 为 70.97%。
 DeepSeek 已完成两版固定 20 条 Dev 试跑；第二版通过格式和位置检查，接口参数已冻结。
 2026-10-26：完成固定 300 条 Dev 的 0/2/4/8-shot 比较，按实体 F1 选定 4-shot，并完成零样本和 4-shot 的完整 Dev 检查。
-完整 Dev 实体 F1：零样本 58.23%、4-shot 71.18%、CRF 70.97%。这些是开发集结果，正式 Test 尚未预测或评分。
-本轮新增记账约 3.0227 元，全项目累计约 3.6603 元；没有未决记账。完整双层指标、各类指标及自动错误归因见 [五方法 Dev 结果](reports/five-method-dev.md)。
+完整 Dev 实体 F1：零样本 58.23%、4-shot 71.18%、CRF 70.97%。完整双层指标、各类指标及自动错误归因见 [五方法 Dev 结果](reports/five-method-dev.md)。
+2026-10-26：在提交 `a67703d` 冻结全部方案及分析规则后，完成本分支正式 Test 1,209 句。实体 F1：词典 56.21%、HMM 48.73%、CRF 70.75%、零样本 56.82%、4-shot 69.36%。
+4-shot 减 CRF 的整体实体 F1 差值为 −1.39 个百分点，描述性配对 95% 区间 [−3.47,+0.69]；Train 未见实体文本及类别组的 F1 则分别为 56.92% 与 46.64%。分组仅描述当前 Train 覆盖，不能据此推断预训练未知或因果机制。
+正式 Test 新增记账约 2.0621 元，全项目累计约 5.7224 元，无未决记账。见 [Test 完整结果](reports/formal-test-results.md)、[主要发现](reports/formal-test-findings.md)、[本分支贡献与证据](reports/branch-contributions.md)。
+99 项测试通过；五方法预测、配对重采样及分组结果离线重算一致。40 个错误事件和其中 20 个独立双人任务已准备，真实人工核验尚未完成。
 
 2026-10-25：新增本分支独立的字符定位 2×2 对照。固定四条训练示例，在排除旧试跑与调参子集后的 200 条 Dev 上完成四组共 800 次真实请求；考察索引展示和终点解释，而非重复 main 的示例数量实验。
-三列索引的坐标错误句子从 6/200 降到 1/200，但实体 F1 差值区间仍包含零，不宣称普遍提升。正式 Test 未运行。
+三列索引的坐标错误句子从 6/200 降到 1/200，但实体 F1 差值区间仍包含零，不宣称普遍提升。该对照属于 Dev 实验，未用于 Test 后修改提示。
 见 [实测表与配对区间](reports/index-factorial-results.md)、[结果解读](reports/index-factorial-findings.md)、[完整学习与代码讲解](docs/learning-index-experiment.md)。
 
 当前配置为 `configs/experiment_v2.json`；`configs/experiment.json` 为保留的历史草稿。
@@ -44,7 +47,7 @@ Git 仓库不包含原始语料、处理后数据或虚拟环境。克隆后，�
 环境说明见 docs/environment.md；精确依赖见 requirements-lock.txt。密钥只放环境变量或本机 .env；LLM 运行器显式读取 .env，其他模块不会自动加载。
 
 划分 ID 和哈希见 `data/splits/experiment_v2.json`；唯一重叠样本 `train:1506` 固定在 Train，但训练与提示示例统一跳过。
-官方无标签 Test 单独保留。传统模型选择见 `configs/traditional_selected.json`，LLM 选择见 `configs/llm_selected.json`；下一阶段冻结全局 Test 运行配置后再评分。
+官方无标签 Test 单独保留。传统模型选择见 `configs/traditional_selected.json`，LLM 选择见 `configs/llm_selected.json`；两者保留 Test 前的历史状态，完整 Test 冻结清单见 `configs/test_frozen_v1.json`。
 
 LLM Dev 的固定设计见 `configs/llm_dev_v1.json`。下面的回放只使用本地缓存；缓存不完整会停止，不会补发网络请求：
 
@@ -54,6 +57,14 @@ LLM Dev 的固定设计见 `configs/llm_dev_v1.json`。下面的回放只使用�
 ```
 
 真实调用入口为 `scripts/run_llm_dev.py --phase tune`，完成后才能运行 `--phase full`；`--dry-run` 只准备计划。原始回答、usage、共享预算账本及模型保存在本地，不进入 Git。
+
+正式 Test 离线核对入口如下，缺少缓存时停止，不补发 API：
+
+```powershell
+.\.venv\Scripts\python.exe scripts\verify_formal_test.py
+```
+
+它会核对冻结代码、数据和模型，回放全部 2,418 个 LLM 请求，检查五方法双层评分、2,000 次配对 Bootstrap 和 Train 词面分组一致。需要本地完整结果包；Git 仓库不含原始回答和模型。核验模板保存在 `runs/formal_test_v1/human-review/`，应复制后填写并保留空白原件。
 
 ## 旧项目归档
 

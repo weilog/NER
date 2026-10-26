@@ -1,6 +1,6 @@
 {
   "protocol": "dual-evaluation-v2",
-  "status": "traditional_dev_complete; llm_pilot_v2_passed; index_factorial_dev_complete; llm_shot_tuning_and_full_dev_complete; test_not_evaluated",
+  "status": "traditional_dev_complete; index_factorial_dev_complete; llm_dev_complete; frozen_formal_test_complete; bootstrap_and_novelty_diagnostics_complete; human_review_pending",
   "dataset": {
     "name": "CLUENER2020",
     "seed_file": "configs/split_seed.json",

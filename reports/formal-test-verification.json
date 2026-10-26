@@ -1,0 +1,40 @@
+{
+  "saved_predictions_rescored_identically": true,
+  "novelty_counts_additive": true,
+  "error_counts_conserved": true,
+  "bootstrap_repeats": 2000,
+  "bootstrap_seed": 141595842,
+  "review_errors_prepared": 40,
+  "independent_review_tasks": 20,
+  "human_ratings_completed": false,
+  "illustrative_cases": 6,
+  "preregistration_commit": "a67703d91e649c0475dec3de71dfafd2ef2f43e5",
+  "commit_at": "2026-10-26T12:59:21+08:00",
+  "prediction_run_started_at": "2026-10-26T12:59:25.335401+08:00",
+  "first_new_api_attempt_at": "2026-10-26T12:59:27.028683+08:00",
+  "freeze_committed_before_test_predictions": true,
+  "no_post_test_configuration_change": true,
+  "offline_replay": {
+    "cached_llm_requests_replayed": 2418,
+    "additional_api_attempts": 0,
+    "protected_files_byte_identical": 37,
+    "paired_bootstrap_identical": true,
+    "novelty_slices_identical": true,
+    "accounting_unchanged": true
+  },
+  "request_interface_audit": {
+    "target_messages_checked": 2418,
+    "target_annotation_fields_absent": true,
+    "requests_sha256": "b7c3f9cd586f0c07c171fee5f6c0f7b8a2f9bfd946274dc5847c52beb6a3dddd",
+    "frozen_sources_unchanged": true
+  },
+  "automated_tests_passed": 99,
+  "global_accounting_at_completion": {
+    "accounted_cny": 5.7223928399999995,
+    "budget_cny": 100,
+    "attempt_count": 6524,
+    "unknown_or_pending_attempts": 0,
+    "unknown_or_pending_reserved_cny": 0,
+    "successful_response_attempts": 6524
+  }
+}
