@@ -7,3 +7,5 @@ data/splits/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at
 # Final demo integrity snapshot and reference table must retain exact bytes.
 reports/demo_inputs_manifest.json -text
 reports/tables/network_recovery/** -text
+# Complete public materials are committed as verified archive parts.
+reproducibility/** -text

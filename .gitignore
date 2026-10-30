@@ -18,7 +18,7 @@ htmlcov/
 build/
 dist/
 
-# Local data, raw API responses, logs and trained models
+# Extracted working copies; complete public archive parts are in reproducibility/
 /data/raw/*
 !/data/raw/.gitkeep
 /data/processed/*
