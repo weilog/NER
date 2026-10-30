@@ -58,12 +58,58 @@ def bio_to_entities(tags):
         entities.append({'start': i, 'end': j, 'type': category}); i = j
     return entities, illegal
 
-def spans_to_bio(entities, length):
-    """Deterministic projection only; strict entity scoring retains overlaps."""
-    tags = ['O'] * length; occupied = set(); dropped = 0
-    for start, end, category in sorted(entities, key=lambda e: (e[0], -e[1], e[2])):
+def entities_to_bio_set(entities, sample_id):
+    """Expand ALL valid spans; overlapping BIO labels coexist at a character.
+
+    Set semantics deduplicate identical (sample, position, BIO label) items.
+    No O items are inserted. This is a BIO extension, not EDS-NLP's type-only metric.
+    """
+    items = set()
+    for start, end, category in entities:
+        items.add((sample_id, start, 'B-' + category))
+        items.update((sample_id, i, 'I-' + category) for i in range(start + 1, end))
+    return items
+
+
+def overlapping_entities(entities):
+    """Diagnostic only: unique spans participating in overlap, and pair count."""
+    ordered = sorted(entities)
+    involved = set()
+    pairs = 0
+    for i, first in enumerate(ordered):
+        for second in ordered[i + 1:]:
+            if second[0] >= first[1]:
+                break
+            involved.update((first, second))
+            pairs += 1
+    return involved, pairs
+
+
+def resolve_overlaps(entities):
+    """Select valid spans without consulting gold; never mutate the input.
+
+    Priority: earliest start, longest at the same start, then LABELS order.
+    Input must already have passed checked_entities().
+    """
+    category_order = {category: i for i, category in enumerate(LABELS)}
+    kept, removed, occupied = set(), set(), set()
+    ordered = sorted(entities, key=lambda e: (e[0], -e[1], category_order[e[2]]))
+    for entity in ordered:
+        start, end, category = entity
         positions = set(range(start, end))
-        if positions & occupied: dropped += 1; continue
-        occupied |= positions; tags[start] = 'B-' + category
+        if positions & occupied:
+            removed.add(entity)
+        else:
+            kept.add(entity)
+            occupied.update(positions)
+    return kept, removed
+
+
+def spans_to_bio(entities, length):
+    """Project valid spans to BIO using the shared overlap policy."""
+    kept, removed = resolve_overlaps(entities)
+    tags = ['O'] * length
+    for start, end, category in kept:
+        tags[start] = 'B-' + category
         tags[start + 1:end] = ['I-' + category] * (end - start - 1)
-    return tags, dropped
+    return tags, len(removed)

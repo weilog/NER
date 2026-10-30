@@ -39,14 +39,42 @@ def messages(row,examples):
 
 class BudgetStop(RuntimeError):pass
 
+def parse_response(raw):
+    """One parser for fresh responses and cached-response consistency checks."""
+    try:
+        choice=raw['choices'][0]
+        if choice.get('finish_reason')!='stop':raise ValueError('Incomplete output')
+        parsed=json.loads(choice['message']['content'])
+        if not isinstance(parsed,dict) or not isinstance(parsed.get('entities'),list):raise ValueError('Expected entities array')
+        for e in parsed['entities']:
+            if not isinstance(e,dict) or type(e.get('start')) is not int or type(e.get('end')) is not int or not isinstance(e.get('type'),str):raise ValueError('Malformed entity')
+        return 'ok',parsed['entities']
+    except (ValueError,KeyError,TypeError,IndexError,AttributeError):
+        return 'format_error',[]
+
+def validate_cache(record,payload,endpoint,response_parser=parse_response):
+    if record.get('cache_version')!=2:
+        raise ValueError('Legacy cache: preserve it for offline replay; use a new experiment directory')
+    body={k:v for k,v in record.items() if k!='record_sha256'}
+    if record.get('record_sha256')!=object_hash(body):raise ValueError('Cache content hash mismatch')
+    if record.get('payload')!=payload or record.get('endpoint')!=endpoint or record.get('payload_sha256')!=object_hash(payload):
+        raise ValueError('Cache request mismatch')
+    prediction=record['prediction'];raw=record['raw_response']
+    expected=('api_error',[]) if raw is None else response_parser(raw)
+    if (prediction['status'],prediction['entities'])!=expected:raise ValueError('Cache parse mismatch')
+    if prediction['cache_key']!=object_hash({'endpoint':endpoint,'payload':payload}):raise ValueError('Cache key mismatch')
+    return prediction
+
 class Client:
-    def __init__(self,folder=None,budget=100,transport=None):
+    def __init__(self,folder=None,budget=100,transport=None,*,message_builder=None,response_parser=None):
         self.folder=Path(folder or ROOT/'runs/llm');self.folder.mkdir(parents=True,exist_ok=True)
         self.cache=self.folder/'cache';self.cache.mkdir(exist_ok=True)
         self.ledger_path=self.folder/'ledger.json';self.lock=threading.Lock();self.budget=budget
         self.ledger=load_json(self.ledger_path) if self.ledger_path.exists() else {'attempts':[]}
         self.prices=load_json(ROOT/'configs/pricing.json')['peak']
         self.transport=transport or self.http
+        self.message_builder=message_builder or messages
+        self.response_parser=response_parser or parse_response
         values=dotenv_values(ROOT/'.env');self.key=values.get('DEEPSEEK_API_KEY') or os.getenv('DEEPSEEK_API_KEY')
         base=values.get('DEEPSEEK_BASE_URL') or os.getenv('DEEPSEEK_BASE_URL') or 'https://api.deepseek.com'
         if base.rstrip('/') not in ('https://api.deepseek.com','https://api.deepseek.com/v1'):raise ValueError('Unapproved API endpoint')
@@ -78,12 +106,11 @@ class Client:
         with urllib.request.urlopen(request,timeout=90) as response:return json.load(response)
 
     def predict(self,row,examples):
-        payload={**PARAMETERS,'messages':messages(row,examples)};key=object_hash({'endpoint':self.url,'payload':payload})
+        payload={**PARAMETERS,'messages':self.message_builder(row,examples)};key=object_hash({'endpoint':self.url,'payload':payload})
         path=self.cache/(key+'.json')
         if path.exists():
             cached=load_json(path)
-            if cached['payload_sha256']!=object_hash(payload):raise ValueError('Cache fingerprint mismatch')
-            return {**cached['prediction'],'id':row['id']}
+            return {**validate_cache(cached,payload,self.url,self.response_parser),'id':row['id']}
         start=time.perf_counter();raw=None;error=None;attempts=0
         for attempt in range(3):
             index=self.reserve(key,payload);attempts+=1
@@ -107,18 +134,12 @@ class Client:
                 time.sleep(2**attempt)
         result={'id':row['id'],'status':'api_error','entities':[], 'latency_seconds':time.perf_counter()-start,'attempts':attempts,'cache_key':key}
         if raw is not None:
-            try:
-                choice=raw['choices'][0]
-                if choice.get('finish_reason')!='stop':raise ValueError('Incomplete output')
-                parsed=json.loads(choice['message']['content'])
-                if not isinstance(parsed,dict) or not isinstance(parsed.get('entities'),list):raise ValueError('Expected entities array')
-                for e in parsed['entities']:
-                    if not isinstance(e,dict) or type(e.get('start')) is not int or type(e.get('end')) is not int or not isinstance(e.get('type'),str):raise ValueError('Malformed entity')
-                result.update(status='ok',entities=parsed['entities'])
-            except (ValueError,KeyError,TypeError,IndexError):result['status']='format_error'
+            result['status'],result['entities']=self.response_parser(raw)
             result.update(actual_model=raw.get('model'),usage=raw.get('usage',{}))
         else:result['error']=error
-        record={'created_at':utc_now(),'payload_sha256':object_hash(payload),'parameters':PARAMETERS,'example_ids':[r['id'] for r in examples],
+        record={'cache_version':2,'endpoint':self.url,'payload':payload,
+                'created_at':utc_now(),'payload_sha256':object_hash(payload),'parameters':PARAMETERS,'example_ids':[r['id'] for r in examples],
                 'prediction':result,'raw_response':raw}
+        record['record_sha256']=object_hash(record)
         temp=path.with_suffix('.tmp');save_json(temp,record);temp.replace(path)
         return result

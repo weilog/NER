@@ -1,0 +1,49 @@
+{
+  "provider": "bigmodel-official",
+  "model": "glm-5.3-flashx",
+  "base_url": "https://open.bigmodel.cn/api/paas/v4/",
+  "api_key_env": "GLM_API_KEY",
+  "base_url_env": "GLM_BASE_URL",
+  "model_env": "GLM_MODEL",
+  "parameters": {
+    "temperature": 0,
+    "max_tokens": 8192,
+    "thinking": {
+      "type": "enabled"
+    },
+    "reasoning_effort": "low",
+    "response_format": {
+      "type": "json_object"
+    },
+    "stream": false
+  },
+  "pricing": {
+    "checked_date": "2026-10-27",
+    "source": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+    "unit": "CNY per million tokens",
+    "input_cache_miss": 2.0,
+    "input_cache_hit": 0.57,
+    "output": 7.0
+  },
+  "budget_cny": 30,
+  "project_budget_cny": 100,
+  "shots": [
+    0,
+    2,
+    4,
+    8
+  ],
+  "example_ids": [
+    "train:2210",
+    "train:6053",
+    "train:1810",
+    "train:4309",
+    "train:8789",
+    "train:81",
+    "train:8056",
+    "train:8621"
+  ],
+  "notes": "Test-only extension. FlashX requires thinking; differs from DeepSeek thinking-disabled and max_tokens=2048. No Test-based selection.",
+  "system_sha256": "080d0ee633f622ab3dc6fe1452c280273cabf1ca09644584e04ecbc038f3a443",
+  "examples_sha256": "18bcc4b8dcf5fbb59dbec3abc693ead0188f466b8e40ed2d596984340c6de2c9"
+}

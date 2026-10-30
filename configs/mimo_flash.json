@@ -1,0 +1,58 @@
+{
+  "status": "offline_validated_not_called",
+  "provider": "xiaomi-official-pay-as-you-go",
+  "model": "mimo-v2.6-flash",
+  "base_url": "https://api.xiaomimimo.com/v1",
+  "api_key_env": "MIMO_API_KEY",
+  "base_url_env": "MIMO_BASE_URL",
+  "model_env": "MIMO_MODEL",
+  "official_model_page": "https://mimo.mi.com/models/en-US/mimo-v2.6-flash",
+  "checked_date": "2026-10-27",
+  "verified_capabilities": {
+    "thinking_disabled_supported": true,
+    "structured_output_listed": true,
+    "output_limit_parameter_in_official_example": "max_completion_tokens",
+    "published_rpm": 100
+  },
+  "pricing": {
+    "unit": "CNY per million tokens",
+    "input_cache_miss": 1.0,
+    "input_cache_hit": 0.02,
+    "output": 2.0,
+    "source": "https://mimo.mi.com/models/en-US/mimo-v2.6-flash"
+  },
+  "notes": "Offline tests and key-presence/data/budget checks passed; no real MiMo request has been sent. Key validity and live response behavior remain unverified. GLM stays paused; project budget includes every prior unknown reservation.",
+  "parameters": {
+    "temperature": 0,
+    "max_completion_tokens": 2048,
+    "thinking": {
+      "type": "disabled"
+    },
+    "response_format": {
+      "type": "json_object"
+    },
+    "stream": false
+  },
+  "shots": [
+    0,
+    2,
+    4,
+    8
+  ],
+  "workers": 4,
+  "rpm": 90,
+  "example_ids": [
+    "train:2210",
+    "train:6053",
+    "train:1810",
+    "train:4309",
+    "train:8789",
+    "train:81",
+    "train:8056",
+    "train:8621"
+  ],
+  "system_sha256": "080d0ee633f622ab3dc6fe1452c280273cabf1ca09644584e04ecbc038f3a443",
+  "examples_sha256": "18bcc4b8dcf5fbb59dbec3abc693ead0188f466b8e40ed2d596984340c6de2c9",
+  "evaluation": "v3",
+  "test_samples_per_shot": 1209
+}

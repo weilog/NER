@@ -1,8 +1,11 @@
-"""Strict span and non-O BIO micro metrics, including explicit failures."""
+"""V3: retain overlaps; score exact spans and (sample, character, BIO) sets."""
 from collections import Counter
+from copy import deepcopy
 import numpy as np
 from scipy.optimize import linear_sum_assignment
-from ner_experiment.common import LABELS, TAGS, bio_to_entities, spans_to_bio
+from ner_experiment.common import LABELS, TAGS, bio_to_entities, entities_to_bio_set, overlapping_entities
+
+PROTOCOL_VERSION = 'v3'
 
 def prf(tp, fp, fn):
     p = tp / (tp + fp) if tp + fp else 0.0
@@ -57,15 +60,15 @@ def evaluate(gold_rows, predictions):
     if len({r['id'] for r in predictions}) != len(predictions): raise ValueError('Duplicate prediction IDs')
     if {r['id'] for r in predictions} != {r['id'] for r in gold_rows}: raise ValueError('Missing or extra prediction IDs')
     pred_map = {r['id']: r for r in predictions}
-    entity = Counter(); token = Counter(); per_type = {c: Counter() for c in LABELS}
+    entity = Counter(); penalized_entity = Counter(); token = Counter(); per_type = {c: Counter() for c in LABELS}
     per_tag = {c: Counter() for c in TAGS[1:]}; diagnostics = Counter(); cases = []; counts = []
     for row in gold_rows:
         if not row.get('has_labels', True) or row.get('entities') is None: raise ValueError('Unlabeled gold cannot be scored')
         n = len(row['tokens']); g, invalid, duplicate = checked_entities(row['entities'], n)
         if invalid or duplicate: raise ValueError('Invalid gold entities')
-        gt, overlaps = spans_to_bio(g, n)
-        if overlaps: raise ValueError('Nested gold needs an explicit token evaluation policy')
+        gt = entities_to_bio_set(g, row['id'])
         record = pred_map[row['id']]; status = record.get('status', 'ok')
+        illegal = 0
         if status not in {'ok', 'api_error', 'format_error'}: raise ValueError('Unknown prediction status')
         if status != 'ok':
             p, inv, dup = set(), 0, 0; diagnostics['failed_samples'] += 1
@@ -76,33 +79,52 @@ def evaluate(gold_rows, predictions):
                 raw, illegal = bio_to_entities(record['raw_bio']); diagnostics['illegal_bio_positions'] += illegal
                 diagnostics['raw_bio_positions'] += n
             p, inv, dup = checked_entities(raw, n)
-        pt, projected = spans_to_bio(p, n)
+
+        # No overlap selection: every valid span contributes to BOTH metrics.
+        pt = entities_to_bio_set(p, row['id'])
+        overlapping, overlap_pairs = overlapping_entities(p)
         diagnostics['invalid_entities'] += inv; diagnostics['duplicate_entities'] += dup
-        diagnostics['invalid_samples'] += bool(inv); diagnostics['overlap_projection_samples'] += bool(projected)
-        diagnostics['projected_out_entities'] += projected
-        tp, fp, fn = len(g & p), len(p - g) + inv, len(g - p)
+        diagnostics['invalid_samples'] += bool(inv)
+        diagnostics['overlap_samples'] += bool(overlapping)
+        diagnostics['overlapping_entities'] += len(overlapping)
+        diagnostics['overlap_pairs'] += overlap_pairs
+        tp, fp, fn = len(g & p), len(p - g), len(g - p)
         entity.update(tp=tp, fp=fp, fn=fn)
+        penalized_entity.update(tp=tp, fp=fp + inv, fn=fn)
         for c in LABELS:
             gc, pc = {e for e in g if e[2] == c}, {e for e in p if e[2] == c}
             per_type[c].update(tp=len(gc & pc), fp=len(pc - gc), fn=len(gc - pc))
-        # Invalid entities cannot be assigned consistently to the ten valid classes;
-        # they are counted in overall strict micro FP and separately documented.
-        stp = sfp = sfn = 0
-        for a, b in zip(gt, pt):
-            diagnostics['characters'] += 1; diagnostics['correct_characters'] += a == b
-            if a == b and a != 'O': stp += 1; per_tag[a]['tp'] += 1
-            if a != b:
-                if b != 'O': sfp += 1; per_tag[b]['fp'] += 1
-                if a != 'O': sfn += 1; per_tag[a]['fn'] += 1
+        # These are counts of label items, not counts of unique characters.
+        matched, extra, missing = gt & pt, pt - gt, gt - pt
+        stp, sfp, sfn = len(matched), len(extra), len(missing)
+        for items, name in [(matched, 'tp'), (extra, 'fp'), (missing, 'fn')]:
+            for _, _, tag in items:
+                per_tag[tag][name] += 1
+        # Exact label-set accuracy: empty vs empty represents O vs O.
+        gold_labels = [set() for _ in range(n)]
+        pred_labels = [set() for _ in range(n)]
+        for _, i, tag in gt: gold_labels[i].add(tag)
+        for _, i, tag in pt: pred_labels[i].add(tag)
+        diagnostics['characters'] += n
+        diagnostics['correct_characters'] += sum(a == b for a, b in zip(gold_labels, pred_labels))
         token.update(tp=stp, fp=sfp, fn=sfn)
         errors = error_pairs(g, p)
-        errors += [{'kind': 'invalid', 'gold': None, 'predicted': None} for _ in range(inv)]
-        counts.append({'id': row['id'], 'entity': [tp, fp, fn], 'token': [stp, sfp, sfn]})
-        if errors or status != 'ok': cases.append({'id': row['id'], 'text': row['text'], 'status': status, 'errors': errors,
-                                                 'entity': prf(tp, fp, fn), 'token': prf(stp, sfp, sfn)})
+        counts.append({'id': row['id'], 'entity': [tp, fp, fn], 'token': [stp, sfp, sfn],
+                       'entity_with_invalid_fp': [tp, fp + inv, fn]})
+        if errors or status != 'ok' or inv or dup or overlapping or illegal:
+            cases.append({'id': row['id'], 'text': row['text'], 'status': status,
+                          'errors': errors,
+                          'entity': prf(tp, fp, fn), 'token': prf(stp, sfp, sfn),
+                          'entity_with_invalid_fp': prf(tp, fp + inv, fn),
+                          'raw_prediction': deepcopy(record),
+                          'normalization': {'kept_entities': sorted(p), 'overlapping_entities': sorted(overlapping),
+                                            'overlap_pairs': overlap_pairs,
+                                            'invalid_entities': inv, 'duplicate_entities': dup,
+                                            'illegal_bio_positions': illegal}})
     def score(c): return prf(c['tp'], c['fp'], c['fn'])
     classes = {k: score(v) for k, v in per_type.items()}
     result = {'samples': len(gold_rows), 'entity': score(entity), 'token': score(token), 'entity_per_type': classes,
+              'entity_with_invalid_fp': score(penalized_entity),
               'token_per_bio_label': {k: score(v) for k, v in per_tag.items()},
               'entity_macro_f1': sum(v['f1'] for v in classes.values()) / len(LABELS),
               'character_accuracy': diagnostics['correct_characters'] / diagnostics['characters'] if diagnostics['characters'] else 0,
@@ -110,7 +132,11 @@ def evaluate(gold_rows, predictions):
               'invalid_sample_rate': diagnostics['invalid_samples'] / len(gold_rows) if gold_rows else 0,
               'illegal_bio_rate': diagnostics['illegal_bio_positions'] / diagnostics['raw_bio_positions'] if diagnostics['raw_bio_positions'] else 0,
               'error_counts': dict(Counter(e['kind'] for case in cases for e in case['errors'])),
-              'protocol': 'normalized BIO, non-O 20-label token micro; exact span/type entity micro; invalid FP only in overall entity micro'}
+              'protocol_version': PROTOCOL_VERSION,
+              'protocol': 'v3: retain all valid deduplicated spans; token micro over (sample ID, character position, full BIO label) sets; strict entity micro over identical spans',
+              'character_accuracy_definition': 'exact equality of BIO label sets at each character, including empty (O) positions',
+              'invalid_output_policy': 'invalid entries cannot map to characters: excluded from both main metrics; counted as FP in entity_with_invalid_fp; raw outputs preserved',
+              'bio_policy': 'record illegal transitions, then fixed I->B interpretation before span expansion'}
     return result, counts, cases
 
 def paired_bootstrap(a, b, seed, repeats=2000):

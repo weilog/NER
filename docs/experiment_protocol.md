@@ -1,4 +1,6 @@
-# 当前实验协议
+# 历史实验协议（初版，保留追溯）
+
+2026-10-28提示：本文记录初版V1和旧Prompt的计划，不能作为最新15组实验协议。尤其是重叠处理、无效预测评分、LLM完整Dev选参及40/20人审安排后来已变更。当前实际口径见[evaluation_v3.md](evaluation_v3.md)、[15组报告](../reports/integrated_results.md)与[整合复现说明](integration_reproduction.md)。下文保留原文，不倒改历史。
 
 数据集CLUENER2020，10类实体，Unicode字符级位置，跨度[start,end)。原始数据不改动，项目划分单独保存。
 

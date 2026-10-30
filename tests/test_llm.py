@@ -23,7 +23,7 @@ def test_failure_and_invalid(tmp_path,monkeypatch):
     assert c.predict(ROW,[])['status']=='api_error' and len(calls)==3
     assert c.total()>0 # uncertain failed requests retain reservations
     invalid=Client(tmp_path/'invalid',transport=lambda p:response('{"entities":[{"start":0,"end":99,"type":"other"}]}')).predict(ROW,[])
-    assert invalid['status']=='ok' # evaluator counts this as invalid FP
+    assert invalid['status']=='ok' # V3 diagnoses invalid spans; auxiliary metric counts FP
     assert Client(tmp_path/'bad',transport=lambda p:response('oops')).predict(ROW,[])['status']=='format_error'
 
 def test_no_retry_auth(tmp_path):
@@ -45,3 +45,22 @@ def test_prompt_examples_from_valid_training():
     assert len(selected)==8 and len({r['id'] for r in selected})==8
     assert all(r['bio_compatible'] and r['id']!='train:1506' for r in selected)
     assert [r['id'] for r in selected]==[r['id'] for r in choose_examples(rows,seed)]
+
+@pytest.mark.parametrize('damage',['prediction','payload','raw_response','legacy','rehashed_prediction'])
+def test_cache_corruption_stops_without_request(tmp_path,damage):
+    from ner_experiment.common import load_json,save_json,object_hash
+    calls=[]
+    def mock(payload):calls.append(payload);return response()
+    client=Client(tmp_path,transport=mock);client.predict(ROW,[])
+    path=next(client.cache.glob('*.json'));record=load_json(path)
+    assert record['payload']['messages'][-1]['role']=='user'
+    if damage in ('prediction','rehashed_prediction'):
+        record['prediction']['entities']=[{'start':0,'end':2,'type':'name'}]
+    elif damage=='payload':record['payload']['temperature']=1
+    elif damage=='raw_response':record['raw_response']['model']='changed'
+    else:del record['cache_version']
+    if damage=='rehashed_prediction':
+        record['record_sha256']=object_hash({k:v for k,v in record.items() if k!='record_sha256'})
+    save_json(path,record);before=path.read_bytes()
+    with pytest.raises(ValueError):client.predict(ROW,[])
+    assert len(calls)==1 and path.read_bytes()==before

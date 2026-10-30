@@ -1,0 +1,13 @@
+README.md
+pyproject.toml
+src/fewnerd_ner_experiment.egg-info/PKG-INFO
+src/fewnerd_ner_experiment.egg-info/SOURCES.txt
+src/fewnerd_ner_experiment.egg-info/dependency_links.txt
+src/fewnerd_ner_experiment.egg-info/requires.txt
+src/fewnerd_ner_experiment.egg-info/top_level.txt
+src/ner_experiment/__init__.py
+src/ner_experiment/data/__init__.py
+src/ner_experiment/evaluation/__init__.py
+src/ner_experiment/llm/__init__.py
+src/ner_experiment/models/__init__.py
+tests/test_data_preparation.py
