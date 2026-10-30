@@ -1,6 +1,8 @@
 {
   "schema": "cluener-submission-source-2",
   "download_url": null,
-  "publication_status": "not_uploaded",
-  "notice": "One external ZIP; download manually and place beside extracted source directory, or use --materials / --url."
+  "publication_status": "share_link_provided_by_user",
+  "notice": "Baidu sharing webpage, not a direct ZIP URL. Download in browser; use --materials or place the correctly named resource ZIP beside source. Verify archive size and SHA256 after download.",
+  "share_url": "https://pan.baidu.com/s/13Dqdbj1yVe-sErZiAeTknQ?pwd=84e5",
+  "extraction_code": "84e5"
 }
