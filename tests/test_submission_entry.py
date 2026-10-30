@@ -84,5 +84,33 @@ class ExternalResourceTests(unittest.TestCase):
   catalog,_=self.fixture();self.m.restore_resources(self.root,self.archive,catalog,set())
   again=self.m.restore_resources(self.root,self.archive,catalog,set())
   self.assertEqual(again['restored'],0);self.assertEqual(again['preserved'],2)
+ def wrapped_fixture(self):
+  catalog,inventory=self.fixture()
+  with zipfile.ZipFile(self.archive) as z:items={n:z.read(n) for n in z.namelist()}
+  prefix='resource/';video=b'synthetic-video-not-an-experiment-input'
+  with zipfile.ZipFile(self.archive,'w') as z:
+   z.writestr(prefix,b'');z.writestr(prefix+'data/',b'')
+   for n,b in items.items():z.writestr(prefix+n,b)
+   z.writestr(prefix+'demo.mp4',video)
+  catalog=self.catalog(items['MATERIALS_MANIFEST.json'],len(inventory))
+  catalog.update(archive_prefix=prefix,auxiliary_files={'demo.mp4':{'bytes':len(video),'sha256':hashlib.sha256(video).hexdigest()}})
+  return catalog
+ def test_wrapped_resources_restore_without_extracting_video(self):
+  catalog=self.wrapped_fixture();result=self.m.restore_resources(self.root,self.archive,catalog,{'src/x.py'})
+  self.assertEqual(result['restored'],2);self.assertEqual(result['auxiliary_files_verified'],1)
+  self.assertTrue((self.root/'data/test.jsonl').exists())
+  self.assertFalse((self.root/'demo.mp4').exists());self.assertFalse((self.root/'resource').exists())
+ def test_wrapped_undocumented_member_is_rejected(self):
+  catalog=self.wrapped_fixture()
+  with zipfile.ZipFile(self.archive,'a') as z:z.writestr('resource/extra.txt',b'unlisted')
+  catalog.update(archive_bytes=self.archive.stat().st_size,archive_sha256=hashlib.sha256(self.archive.read_bytes()).hexdigest())
+  with self.assertRaisesRegex(RuntimeError,'inventory'):self.m.restore_resources(self.root,self.archive,catalog,set())
+ def test_wrapped_auxiliary_hash_is_checked(self):
+  catalog=self.wrapped_fixture();catalog['auxiliary_files']['demo.mp4']['sha256']='0'*64
+  with self.assertRaisesRegex(RuntimeError,'Auxiliary.*hash'):self.m.restore_resources(self.root,self.archive,catalog,set())
+  self.assertFalse((self.root/'data/test.jsonl').exists())
+ def test_wrapped_unsafe_prefix_is_rejected(self):
+  catalog=self.wrapped_fixture();catalog['archive_prefix']='../resource/'
+  with self.assertRaisesRegex(RuntimeError,'Unsafe'):self.m.restore_resources(self.root,self.archive,catalog,set())
 
 if __name__=='__main__':unittest.main()

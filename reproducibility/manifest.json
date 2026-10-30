@@ -1,10 +1,17 @@
 {
   "schema": "cluener-external-resources-1",
-  "archive_name": "CLUENER2020_复现资源.zip",
-  "archive_bytes": 86712781,
-  "archive_sha256": "a5f9962b7723a9d932b711b85ab892486c8456c1708e5e72370ac16e42adfec1",
+  "archive_name": "CLUENER2020_复现资源 .zip",
+  "archive_bytes": 123330463,
+  "archive_sha256": "c6592823bef7c792e7191aa4a4697da65f626cf1e3e4fd3084a56a455a608fed",
   "manifest_sha256": "7db026e5a9abd8f0b690c5fca5d808fc7cc6c5b058dd9ea5d5663c8ca37e1abd",
   "file_count": 14935,
   "source_overlap_files": 0,
-  "frozen_input_manifest_sha256": "6a8750c5ce7ac4388d4e9c271bde0c591969ac83543a583b8bec3b24e03ba65b"
+  "frozen_input_manifest_sha256": "6a8750c5ce7ac4388d4e9c271bde0c591969ac83543a583b8bec3b24e03ba65b",
+  "archive_prefix": "CLUENER2020_复现资源/",
+  "auxiliary_files": {
+    "屏幕录制 2026-10-30 204834.mp4": {
+      "bytes": 37468062,
+      "sha256": "77268f7d11f71a3ab188bb94af4d88a5e547ec4e63bf831c66b1566112a7458c"
+    }
+  }
 }

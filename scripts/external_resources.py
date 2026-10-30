@@ -55,28 +55,50 @@ def restore_resources(root,archive,catalog,source_files=None):
     frozen=json.loads(frozen_path.read_text(encoding='utf-8-sig'))['files_sha256']
     restored=preserved=0
     with zipfile.ZipFile(archive) as bundle:
-        infos=bundle.infolist();names=[i.filename for i in infos]
-        if len(set(names))!=len(names):raise RuntimeError('Duplicate resource ZIP members')
+        all_infos=bundle.infolist();raw_names=[i.filename for i in all_infos]
+        if len(set(raw_names))!=len(raw_names):raise RuntimeError('Duplicate resource ZIP members')
+        prefix=catalog.get('archive_prefix','')
+        if prefix:
+            if not isinstance(prefix,str) or not prefix.endswith('/'):raise RuntimeError('Unsafe archive prefix')
+            safe_target(root,prefix[:-1])
+        mapped={}
+        for info in all_infos:
+            safe_target(root,info.filename.rstrip('/') if info.is_dir() else info.filename)
+            if stat.S_ISLNK(info.external_attr>>16):raise RuntimeError('Symlink resource member forbidden: '+info.filename)
+            if prefix and not info.filename.startswith(prefix):raise RuntimeError('External ZIP inventory outside declared prefix')
+            if info.is_dir():continue
+            name=info.filename[len(prefix):];safe_target(root,name)
+            mapped[name]=info
+        names=set(mapped)
         if 'MATERIALS_MANIFEST.json' not in names:raise RuntimeError('Missing external material manifest')
-        if bundle.getinfo('MATERIALS_MANIFEST.json').file_size>10*1024*1024:raise RuntimeError('Material manifest size exceeded')
-        raw=bundle.read('MATERIALS_MANIFEST.json')
+        if mapped['MATERIALS_MANIFEST.json'].file_size>10*1024*1024:raise RuntimeError('Material manifest size exceeded')
+        raw=bundle.read(mapped['MATERIALS_MANIFEST.json'])
         if hashlib.sha256(raw).hexdigest()!=catalog['manifest_sha256']:raise RuntimeError('External manifest SHA256 differs')
         manifest=json.loads(raw.decode('utf-8-sig'),object_pairs_hook=_unique_json)
         if manifest.get('schema')!='cluener-resource-members-1' or not isinstance(manifest.get('files'),dict):raise RuntimeError('Unknown member manifest')
         files=manifest['files']
-        if len(files)!=catalog['file_count'] or set(names)!=set(files)|{'MATERIALS_MANIFEST.json'}:raise RuntimeError('External ZIP inventory differs')
+        auxiliary=catalog.get('auxiliary_files',{})
+        if not isinstance(auxiliary,dict):raise RuntimeError('Invalid auxiliary inventory')
+        for name,entry in auxiliary.items():
+            safe_target(root,name)
+            if len(PurePosixPath(name).parts)!=1 or PurePosixPath(name).suffix.lower()!='.mp4':raise RuntimeError('Unsupported auxiliary file: '+name)
+            if name in files:raise RuntimeError('Auxiliary/resource overlap')
+        if len(files)!=catalog['file_count'] or names!=set(files)|{'MATERIALS_MANIFEST.json'}|set(auxiliary):raise RuntimeError('External ZIP inventory differs')
         overlap=set(names)&source_files
         if overlap:raise RuntimeError('Source/resource path overlap: '+repr(sorted(overlap)))
-        for info in infos:
-            if info.filename=='MATERIALS_MANIFEST.json':continue
-            target=safe_target(root,info.filename)
-            if not resource_path(info.filename):raise RuntimeError('Forbidden resource path: '+info.filename)
-            if stat.S_ISLNK(info.external_attr>>16):raise RuntimeError('Symlink resource member forbidden: '+info.filename)
-            entry=files[info.filename]
+        # The recording is verified but never restored into experiment inputs.
+        for name,entry in auxiliary.items():
+            digest=hashlib.sha256();total=0
+            with bundle.open(mapped[name]) as source:
+                for block in iter(lambda:source.read(1024*1024),b''):digest.update(block);total+=len(block)
+            if total!=entry.get('bytes') or digest.hexdigest()!=entry.get('sha256'):raise RuntimeError('Auxiliary size/hash mismatch: '+name)
+        for name,entry in files.items():
+            info=mapped[name];target=safe_target(root,name)
+            if not resource_path(name):raise RuntimeError('Forbidden resource path: '+name)
             if type(entry.get('bytes')) is not int or entry['bytes']<0 or info.file_size!=entry['bytes']:
-                raise RuntimeError('Resource size metadata differs: '+info.filename)
+                raise RuntimeError('Resource size metadata differs: '+name)
             if target.exists() and (not target.is_file() or sha256(target)!=entry['sha256']):
-                raise RuntimeError('Existing resource differs; preserved without overwrite: '+info.filename)
+                raise RuntimeError('Existing resource differs; preserved without overwrite: '+name)
         # Validate the entire source/resource dependency union BEFORE extracting anything.
         for name,expected in frozen.items():
             if name in files:
@@ -92,7 +114,7 @@ def restore_resources(root,archive,catalog,source_files=None):
                 temporary=target.with_name(target.name+'.'+uuid.uuid4().hex+'.restoring')
                 digest=hashlib.sha256();total=0
                 try:
-                    with bundle.open(name) as source,temporary.open('xb') as output:
+                    with bundle.open(mapped[name]) as source,temporary.open('xb') as output:
                         for block in iter(lambda:source.read(1024*1024),b''):
                             total+=len(block)
                             if total>entry['bytes']:raise RuntimeError('Resource exceeded size allowance: '+name)
@@ -106,4 +128,5 @@ def restore_resources(root,archive,catalog,source_files=None):
         path=safe_target(root,name)
         if not path.is_file() or sha256(path)!=expected:raise RuntimeError('Final frozen input mismatch: '+name)
     return {'restored':restored,'preserved':preserved,'final_inputs_verified':len(frozen),
-            'source_resource_overlap':0,'resource_files_verified':len(files),'archive_sha256':catalog['archive_sha256']}
+            'source_resource_overlap':0,'resource_files_verified':len(files),'archive_sha256':catalog['archive_sha256'],
+            'auxiliary_files_verified':len(auxiliary)}

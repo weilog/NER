@@ -7,9 +7,9 @@
 | 文件 | 用途 |
 |---|---|
 | 20246118_王学锋_CLUENER2020命名实体识别.zip | 源码交付ZIP，小于50MB；不含数据、权重、原始响应、视频、虚拟环境或真实密钥 |
-| CLUENER2020_复现资源.zip | 通过网盘链接提供的单一外部资源ZIP，约86.7MB；只含data/、必要runs/及MATERIALS_MANIFEST.json |
+| CLUENER2020_复现资源 .zip | 通过网盘链接提供的单一外部资源ZIP，约123.3MB；含实验资源、哈希清单及演示录屏 |
 
-两包无重复文件路径。资源包有原始/处理数据、固定划分、词典/HMM/CRF共13个已训练模型、15组预测、原始API响应、账本及网络恢复记录。源码已带的src/scripts/tests/docs/configs、最终结果CSV和冻结输入清单不重复放入资源包；无关历史备份和旧报告不放入资源包。
+两包无重复文件路径。资源包额外包含成员提供的演示录屏，录屏不参与评分；原14,935个实验资源文件哈希保持一致。ZIP有一层外部目录，新版入口自动识别，仅恢复data/、runs/。资源包有原始/处理数据、固定划分、词典/HMM/CRF共13个已训练模型、15组预测、原始API响应、账本及网络恢复记录。源码已带的src/scripts/tests/docs/configs、最终结果CSV和冻结输入清单不重复放入资源包；无关历史备份和旧报告不放入资源包。
 
 资源下载：[百度网盘](https://pan.baidu.com/s/13Dqdbj1yVe-sErZiAeTknQ?pwd=84e5)，提取码 `84e5`。文件大小、SHA256及文件名说明见[资源链接.md](资源链接.md)。网盘分享页需先在浏览器中下载，不可直接作为 `--url` 参数。
 
@@ -27,7 +27,7 @@ uv pip install --python .venv/Scripts/python.exe --no-deps -e .
 
 ## 一条可执行复现命令
 
-下载外部资源ZIP，保持文件名CLUENER2020_复现资源.zip，将其放在源码解压目录内或该目录的同级位置。资源ZIP不用手工解压。
+下载外部资源ZIP，保持文件名CLUENER2020_复现资源 .zip，将其放在源码解压目录内或该目录的同级位置。资源ZIP不用手工解压。文件名在`.zip`前有一个空格；如改名，请用`--materials`指定实际路径。
 
 在源码解压根目录执行：
 
@@ -38,7 +38,7 @@ uv pip install --python .venv/Scripts/python.exe --no-deps -e .
 如资源ZIP放在其他位置，仍是一条命令：
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/reproduce_submission.py --materials "D:\下载\CLUENER2020_复现资源.zip"
+.\.venv\Scripts\python.exe scripts/reproduce_submission.py --materials "D:\下载\CLUENER2020_复现资源 .zip"
 ```
 
 --materials接受单一ZIP文件，或包含该ZIP的目录。程序会核对配套资源ZIP的大小、SHA256、内部文件清单、与源码的路径交集及最终45个输入；遇到已有文件内容不同会停止，不覆盖。随后加载原训练流水线的CRF，现场推断完整1209句Test，重评15组最终预测并核验两类真实难例。
@@ -110,4 +110,4 @@ Token为Unicode字符，不是计费子词。字符评分按固定优先级将�
 
 本源码ZIP含完整源码、依赖、README、项目摘要与AI声明。最终交付仍需把报告.pdf（正文8—12页，不含附录）与每人真实贡献声明合并进同一个提交ZIP；当前旧报告未同步补测结果，因此没有放入。视频填网盘链接，不进包。
 
-数据和权重只放在外部资源ZIP，通过链接提供。完整原始响应不等于可任意再分发，数据许可记录据实保留。真实密钥、虚拟环境、checkpoint和私人数据不进入提交ZIP。AI使用范围和验证方式见AI使用声明.md；不虚构成员贡献、人审或异机复现。
+数据和权重只放在外部资源ZIP，通过链接提供。当前外部资源ZIP附有录屏，源码提交ZIP不含录屏。完整原始响应不等于可任意再分发，数据许可记录据实保留。真实密钥、虚拟环境、checkpoint和私人数据不进入提交ZIP。AI使用范围和验证方式见AI使用声明.md；不虚构成员贡献、人审或异机复现。
